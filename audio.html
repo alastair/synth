@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      Synth
+    </title>
+    <script src="jquery-1.5.1.js" type="text/javascript"></script>
+    <script src="jquery.json-2.2.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+  <script type="text/javascript" src="synth.js"></script>
+  <script type="text/javascript" src="voice.js"></script>
+  <script type="text/javascript" src="operator.js"></script>
+  <script type="text/javascript" src="envelope.js"></script>
+  <script type="text/javascript" src="ui.js"></script>
+  <script type="text/javascript" src="dsp.js"></script>
+  <script type="text/javascript" src="fm.js"></script>
+  <script type="text/javascript" src="additive.js"></script>
+  <script type="text/javascript" src="defaults.js"></script>
+
+  <div id="messages"></div>
+
+  <div id="synth" style="border: thin solid black;">
+    Voices: <button id="addvoice">Add new voice</button>
+    <table id="voicetable">
+        <tbody></tbody>
+    </table>
+    <button id="savelocal">Save synth to PC</button><button id="loadlocal">Load synth from PC</button>
+    <!-- <button id="savefile">Save synth to file</button><button id="loadfile">Load synth from file</button> -->
+    <button id="resetsynth">Reset to defaults</button><button id="panic">Panic</button>
+  </div>
+
+  <div id="voice" style="display:none;">
+	<table>
+<tr>
+<td colspan="2">Voice name: <input type="text" id="voicename">
+<button id="doneeditingvoice">Done editing</button></td>
+<td rowspan="3" valign="top"><!--Algorithm choice:<br>-->
+<input type="hidden" id="voicealgorithm">
+Synth type<br>
+<label for="synthmodefm">FM</label><input type="radio" name="synthmode" value="fm" id="synthmodefm">
+<label for="synthmodeadd">Additive</label><input type="radio" name="synthmode" value="add" id="synthmodeadd"><br>
+In FM, operator 1 acts as the modulator and operator 2 as the carrier.
+</td>
+</tr><tr>
+<td>
+		<div id="operator1" class="operator">
+			<div class="title">
+				<span style="display:table-cell; float:none; text-align: left;">Operator 1</span>
+				<span style="display:table-cell; text-align: right;"><button id="o1power">Turn off</button></span>
+			</div>
+			<div class="swap"><a id="swapo1" href="">View Envelope</a></div>
+			Freq ratio <input type="text" id="freqratio1">
+		</div>
+		<div id="envelope1" class="envelope">
+			<div class="title">Envelope 1</div>
+			<div class="swap"><a id="swape1" href="">View Operator</a></div>
+
+			<canvas id="envelope1canvas" width="210" height="100"></canvas>
+
+			<table>
+				<tr>
+					<th>L1:</th><td><input type="text" size="2" id="e1l1" class="e1val"></td>
+					<th>L2:</th><td><input type="text" size="2" id="e1l2" class="e1val"></td>
+					<th>L3:</th><td><input type="text" size="2" id="e1l3" class="e1val"></td>
+					<th>L4:</th><td><input type="text" size="2" id="e1l4" class="e1val"></td>
+				</tr><tr>
+					<th>R1:</th><td><input type="text" size="2" id="e1r1" class="e1val"></td>
+					<th>R2:</th><td><input type="text" size="2" id="e1r2" class="e1val"></td>
+					<th></th><td><input type="hidden" size="2" id="e1r3" class="e1val"></td>
+					<th>R4:</th><td><input type="text" size="2" id="e1r4" class="e1val"></td>
+				</tr>
+			</table>
+		</div>
+</td>
+<td>
+		<div id="operator2" class="operator">
+			<div class="title">
+				<span style="display:table-cell; float:none; text-align: left;">Operator 2</span>
+				<span style="display:table-cell; text-align: right;"><button id="o2power">Turn off</button></span>
+			</div>
+			<div class="swap"><a id="swapo2" href="">View Envelope</a></div>
+			Freq ratio <input type="text" id="freqratio2">
+		</div>
+		<div id="envelope2" class="envelope">
+			<div class="title">Envelope 2</div>
+			<div class="swap"><a id="swape2" href="">View Operator</a></div>
+
+			<canvas id="envelope2canvas" width="210" height="100"></canvas>
+
+			<table>
+				<tr>
+					<th>L1:</th><td><input type="text" size="2" id="e2l1" class="e2val"></td>
+					<th>L2:</th><td><input type="text" size="2" id="e2l2" class="e2val"></td>
+					<th>L3:</th><td><input type="text" size="2" id="e2l3" class="e2val"></td>
+					<th>L4:</th><td><input type="text" size="2" id="e2l4" class="e2val"></td>
+				</tr><tr>
+					<th>R1:</th><td><input type="text" size="2" id="e2r1" class="e2val"></td>
+					<th>R2:</th><td><input type="text" size="2" id="e2r2" class="e2val"></td>
+					<th></th><td><input type="hidden" size="2" id="e2r3" class="e2val"></td>
+					<th>R4:</th><td><input type="text" size="2" id="e2r4" class="e2val"></td>
+				</tr>
+			</table>
+
+		</div>
+</td></tr>
+<tr><td>
+		<div id="operator3" class="operator">
+			<div class="title">
+				<span style="display:table-cell; float:none; text-align: left;">Operator 3</span>
+				<span style="display:table-cell; text-align: right;"><button id="o3power">Turn off</button></span>
+			</div>
+			<div class="swap"><a id="swapo3" href="">View Envelope</a></div>
+			Freq ratio <input type="text" id="freqratio3">
+		</div>
+		<div id="envelope3" class="envelope">
+			<div class="title">Envelope 3</div>
+			<div class="swap"><a id="swape3" href="">View Operator</a></div>
+
+			<canvas id="envelope3canvas" width="210" height="100"></canvas>
+
+			<table>
+				<tr>
+					<th>L1:</th><td><input type="text" size="2" id="e3l1" class="e3val"></td>
+					<th>L2:</th><td><input type="text" size="2" id="e3l2" class="e3val"></td>
+					<th>L3:</th><td><input type="text" size="2" id="e3l3" class="e3val"></td>
+					<th>L4:</th><td><input type="text" size="2" id="e3l4" class="e3val"></td>
+				</tr><tr>
+					<th>R1:</th><td><input type="text" size="2" id="e3r1" class="e3val"></td>
+					<th>R2:</th><td><input type="text" size="2" id="e3r2" class="e3val"></td>
+					<th></th><td><input type="hidden" size="2" id="e3r3" class="e3val"></td>
+					<th>R4:</th><td><input type="text" size="2" id="e3r4" class="e3val"></td>
+				</tr>
+			</table>
+		</div>
+
+</td>
+<td>
+
+		<div id="operator4" class="operator">
+			<div class="title">
+				<span style="display:table-cell; float:none; text-align: left;">Operator 4</span>
+				<span style="display:table-cell; text-align: right;"><button id="o4power">Turn off</button></span>
+			</div>
+			<div class="swap"><a id="swapo4" href="">View Envelope</a></div>
+			Freq ratio <input type="text" id="freqratio4">
+		</div>
+		<div id="envelope4" class="envelope">
+			<div class="title">Envelope 4</div>
+			<div class="swap"><a id="swape4" href="">View Operator</a></div>
+
+			<canvas id="envelope4canvas" width="210" height="100"></canvas>
+
+			<table>
+				<tr>
+					<th>L1:</th><td><input type="text" size="2" id="e4l1" class="e4val"></td>
+					<th>L2:</th><td><input type="text" size="2" id="e4l2" class="e4val"></td>
+					<th>L3:</th><td><input type="text" size="2" id="e4l3" class="e4val"></td>
+					<th>L4:</th><td><input type="text" size="2" id="e4l4" class="e4val"></td>
+				</tr><tr>
+					<th>R1:</th><td><input type="text" size="2" id="e4r1" class="e4val"></td>
+					<th>R2:</th><td><input type="text" size="2" id="e4r2" class="e4val"></td>
+					<th></th><td><input type="hidden" size="2" id="e4r3" class="e4val"></td>
+					<th>R4:</th><td><input type="text" size="2" id="e4r4" class="e4val"></td>
+				</tr>
+			</table>
+
+		</div>
+</td>
+</tr>
+</table>
+</div>
+	<p>
+    <button id="displaytoggle">Show display</button>
+    <div id="visualdisplay" style="display:none">
+    Waveform
+    <div><canvas id="signal" width="500px" height="200px"></canvas></div>
+    <p></p>
+    FFT
+    <div><canvas id="fft" width="500px" height="200px"></canvas></div>
+    </div>
+
+<p>
+
+<div id="keyboard" style="">
+<div style="border-right: 1px solid black; height:202px; float:left;"></div>
+<div class="whitekey key" id="m48"></div>
+<div class="whitekey key" id="m50"></div>
+<div class="whitekey key" id="m52"></div>
+<div class="whitekey key" id="m53"></div>
+<div class="whitekey key" id="m55"></div>
+<div class="whitekey key" id="m57"></div>
+<div class="whitekey key" id="m59"></div>
+<div class="whitekey key" style="display:table !important;">
+  <span style="display:table-cell; vertical-align:bottom;" id="m60">&#10057;</span>
+</div>
+<div class="whitekey key" id="m62"></div>
+<div class="whitekey key" id="m64"></div>
+<div class="whitekey key" id="m65"></div>
+<div class="whitekey key" id="m67"></div>
+<div class="whitekey key" id="m69"></div>
+<div class="whitekey key" id="m71"></div>
+<div class="whitekey key" id="m72"></div>
+<div class="whitekey key" id="m74"></div>
+<div class="whitekey key" id="m76"></div>
+<div class="whitekey key" id="m77"></div>
+<div class="whitekey key" id="m79"></div>
+<div class="whitekey key" id="m81"></div>
+<div class="whitekey key" id="m83"></div>
+<div class="whitekey key" id="m84"></div>
+
+<!-- Note that the margins are stopping white notes
+     from being pressed next to black notes. -->
+<div class="black">
+  <div class="blackcont">
+      <div class="blackkey key" id="m49"></div>
+      <div class="blackkey key" id="m51"></div>
+  </div>
+  <div class="blackcont">
+      <div class="blackkey key" id="m54"></div>
+      <div class="blackkey key" id="m56"></div>
+      <div class="blackkey key" id="m58"></div>
+  </div>
+  <div class="blackcont">
+      <div class="blackkey key" id="m61"></div>
+      <div class="blackkey key" id="m63"></div>
+  </div>
+  <div class="blackcont">
+      <div class="blackkey key" id="m66"></div>
+      <div class="blackkey key" id="m68"></div>
+      <div class="blackkey key" id="m70"></div>
+  </div>
+  <div class="blackcont">
+      <div class="blackkey key" id="m73"></div>
+      <div class="blackkey key" id="m75"></div>
+  </div>
+  <div class="blackcont">
+      <div class="blackkey key" id="m78"></div>
+      <div class="blackkey key" id="m80"></div>
+      <div class="blackkey key" id="m82"></div>
+  </div>
+</div>
+</div>
+
+
+  </body>
+</html>

@@ -1,0 +1,79 @@
+/** Page style */
+
+
+/** Envelope / Operator style */
+
+div.operator,
+div.envelope {
+  width: 350px;
+  height: 250px;
+  border: thin solid black;
+  position: relative;
+}
+
+div.envelope .title,
+div.operator .title {
+  color: white;
+  background: black;
+  font-weight: bold;
+  padding: 4px;
+  display:table;
+  width:342px;
+}
+
+div.envelope .swap,
+div.operator .swap {
+	position:absolute;
+	right:0.1em;
+	bottom:0.1em;
+}
+
+div.envelope th {
+	font-weight: normal;
+}
+
+div.envelope canvas {
+	padding: 5px;
+	margin:5px;
+}
+
+/** Keyboard Style */
+
+#keyboard {
+  position: relative;
+}
+
+div.whitekey {
+  height: 200px;
+  width: 39px;
+  border-right: 1px solid black;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  float: left;
+  text-align:center;
+}
+
+div.blackkey {
+  width: 30px;
+  height:100%;
+  float: left;
+  background: black;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+div.black {
+  position: absolute;
+  float: left;
+  z-index: 1;
+  left: 20px;
+  height:110px;
+}
+
+div.blackcont {
+  height: 100%;
+  float: left;
+  margin-right: 40px;
+  position:relative;
+}
+
